@@ -6,12 +6,12 @@
   <meta name="keywords" content=" ctf ">
   <meta name="description" content="DiceCTF-2022-WP | hututu&#39;blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。 secure-page直接看源码，只需要把cookie中的admin设为true即可。 1234567891011121314151617181920212223242526@server.get(&amp;#x27;&#x2F;&amp;#x27;)as">
+<meta name="description" content="一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。 secure-page直接看源码，只需要把cookie中的admin设为true即可。 1234567891011121314151617181920212223242526@server.get(&amp;#x27;&#x2F;&amp;#x27;)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DiceCTF-2022-WP">
 <meta property="og:url" content="http://localhost:4000/2022/07/25/DiceCTF-2022-WP/index.html">
 <meta property="og:site_name" content="hututu&#39;blog">
-<meta property="og:description" content="一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。 secure-page直接看源码，只需要把cookie中的admin设为true即可。 1234567891011121314151617181920212223242526@server.get(&amp;#x27;&#x2F;&amp;#x27;)as">
+<meta property="og:description" content="一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。 secure-page直接看源码，只需要把cookie中的admin设为true即可。 1234567891011121314151617181920212223242526@server.get(&amp;#x27;&#x2F;&amp;#x27;)">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://localhost:4000/2022/07/25/DiceCTF-2022-WP/image1.png">
 <meta property="og:image" content="http://localhost:4000/2022/07/25/DiceCTF-2022-WP/image2.png">
@@ -26,7 +26,7 @@
 <meta property="og:image" content="http://localhost:4000/2022/07/25/DiceCTF-2022-WP/image11.png">
 <meta property="og:image" content="http://localhost:4000/2022/07/25/DiceCTF-2022-WP/image12.png">
 <meta property="article:published_time" content="2022-07-24T18:24:21.000Z">
-<meta property="article:modified_time" content="2022-07-24T18:39:53.291Z">
+<meta property="article:modified_time" content="2022-07-25T01:41:16.688Z">
 <meta property="article:author" content="hututu">
 <meta property="article:tag" content="ctf">
 <meta name="twitter:card" content="summary">
@@ -389,7 +389,7 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2022-07-25 02:39:53'>2022-07-25 02:24</time>
+            Created At : <time class="date" title='Updated At: 2022-07-25 09:41:16'>2022-07-25 02:24</time>
         
     </div>
     <div class="article-meta">
@@ -438,7 +438,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。</p>
+        
+
+<p>一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。</p>
 <h2 id="secure-page"><a href="#secure-page" class="headerlink" title="secure-page"></a>secure-page</h2><p>直接看源码，只需要把cookie中的admin设为true即可。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@server.get(&#x27;/&#x27;)</span><br><span class="line">async def root(request):</span><br><span class="line">    admin = request.cookies.get(&#x27;admin&#x27;, &#x27;&#x27;)</span><br><span class="line"></span><br><span class="line">    headers = &#123;&#125;</span><br><span class="line">    if admin == &#x27;&#x27;:</span><br><span class="line">        headers[&#x27;set-cookie&#x27;] = &#x27;admin=false&#x27;</span><br><span class="line"></span><br><span class="line">    if admin == &#x27;true&#x27;:</span><br><span class="line">        return (200, &#x27;&#x27;&#x27;</span><br><span class="line">            &lt;title&gt;Secure Page&lt;/title&gt;</span><br><span class="line">            &lt;link rel=&quot;stylesheet&quot; href=&quot;/style.css&quot; /&gt;</span><br><span class="line">            &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">                &lt;h1&gt;Secure Page&lt;/h1&gt;</span><br><span class="line">                %s</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        &#x27;&#x27;&#x27; % os.environ.get(&#x27;FLAG&#x27;, &#x27;flag is missing!&#x27;), headers)</span><br><span class="line">    else:</span><br><span class="line">        return (200, &#x27;&#x27;&#x27;</span><br><span class="line">            &lt;title&gt;Secure Page&lt;/title&gt;</span><br><span class="line">            &lt;link rel=&quot;stylesheet&quot; href=&quot;/style.css&quot; /&gt;</span><br><span class="line">            &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">                &lt;h1&gt;Secure Page&lt;/h1&gt;</span><br><span class="line">                Sorry, you must be the admin to view this content!</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        &#x27;&#x27;&#x27;, headers)</span><br></pre></td></tr></table></figure>
 
